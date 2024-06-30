@@ -1,40 +1,26 @@
-import altair as alt
-import numpy as np
-import pandas as pd
 import streamlit as st
+import re
 
-"""
-# Welcome to Streamlit!
+# Titel des Streamlit-Apps
+st.title("Vierstellige Zahl Extrahierer")
 
-Edit `/streamlit_app.py` to customize this app to your heart's desire :heart:.
-If you have any questions, checkout our [documentation](https://docs.streamlit.io) and [community
-forums](https://discuss.streamlit.io).
+# Eingabefeld für den Text
+input_text = st.text_area("Geben Sie Ihren Text ein:")
 
-In the meantime, below is an example of what you can do with just a few lines of code:
-"""
+# Funktion zur Extraktion vierstelliger Zahlen
+def extract_four_digit_numbers(text):
+    return re.findall(r'\b\d{4}\b', text)
 
-num_points = st.slider("Number of points in spiral", 1, 10000, 1100)
-num_turns = st.slider("Number of turns in spiral", 1, 300, 31)
+# Verarbeitung des Eingabetextes
+if st.button("Extrahieren"):
+    extracted_numbers = extract_four_digit_numbers(input_text)
+    
+    if extracted_numbers:
+        st.write("Extrahierte vierstellige Zahlen:")
+        for number in extracted_numbers:
+            st.write(number)
+    else:
+        st.write("Keine vierstelligen Zahlen gefunden.")
 
-indices = np.linspace(0, 1, num_points)
-theta = 2 * np.pi * num_turns * indices
-radius = indices
-
-x = radius * np.cos(theta)
-y = radius * np.sin(theta)
-
-df = pd.DataFrame({
-    "x": x,
-    "y": y,
-    "idx": indices,
-    "rand": np.random.randn(num_points),
-})
-
-st.altair_chart(alt.Chart(df, height=700, width=700)
-    .mark_point(filled=True)
-    .encode(
-        x=alt.X("x", axis=None),
-        y=alt.Y("y", axis=None),
-        color=alt.Color("idx", legend=None, scale=alt.Scale()),
-        size=alt.Size("rand", legend=None, scale=alt.Scale(range=[1, 150])),
-    ))
+# Dieses Skript können Sie in einer Python-Umgebung mit installiertem Streamlit ausführen.
+# Um das Skript zu starten, speichern Sie es in einer Datei (z.B. app.py) und führen Sie im Terminal `streamlit run app.py` aus.
